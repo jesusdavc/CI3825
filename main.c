@@ -79,8 +79,8 @@ int main(int argc, const char * argv[]) {
             if(userTaken == 1){
                 printf("Username already taken");
             } {
-                usersInProgam[currentHashValue][amountOfUsersInCurrentHash].username = newUsername;
-                usersInProgam[currentHashValue][amountOfUsersInCurrentHash].description = description;
+                strcpy(usersInProgam[currentHashValue][amountOfUsersInCurrentHash].username, newUsername);
+                strcpy(usersInProgam[currentHashValue][amountOfUsersInCurrentHash].description, description);
                 usersInProgam[currentHashValue][amountOfUsersInCurrentHash].password = getHash(newPassword);
                 
                 amountOfUsersByHash[currentHashValue] = amountOfUsersByHash[currentHashValue] + 1;
@@ -104,3 +104,4 @@ int main(int argc, const char * argv[]) {
 
     return 0;
 }
+
