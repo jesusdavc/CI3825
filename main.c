@@ -28,16 +28,15 @@ int main(int argc, const char * argv[]) {
         char description[100];
         int password;
         char *tweets[5][280];
-        struct user *usersFollowed[20];
-        int amountOfUsersFollowed;
+        struct user *followers[20];
     } user;
     
     char action[10];
-    char* newUsername[20];
-    char* newPassword[20];
-    char* description[100];
-    char* username[20];
-    char* password[20];
+    char newUsername[20];
+    char newPassword[20];
+    char description[100];
+    char username[20];
+    char password[20];
     int currentHashValue = 0;
     
     struct user usersInProgam[50][4];
@@ -85,7 +84,6 @@ int main(int argc, const char * argv[]) {
                 strcpy(usersInProgam[currentHashValue][amountOfUsersInCurrentHash].username, newUsername);
                 strcpy(usersInProgam[currentHashValue][amountOfUsersInCurrentHash].description, description);
                 usersInProgam[currentHashValue][amountOfUsersInCurrentHash].password = getHash(newPassword);
-                usersInProgam[currentHashValue][amountOfUsersInCurrentHash].amountOfUsersFollowed = 0;
                 
                 amountOfUsersByHash[currentHashValue] = amountOfUsersByHash[currentHashValue] + 1;
             }
@@ -120,6 +118,7 @@ int main(int argc, const char * argv[]) {
                     char nextAction[10] = "";
                     char userToLogin[20] = "";
                     
+                    //int amountOfUsersByHash[50];
                     int amountOfUsersInCurrentHash = 0;
                     
                     
@@ -136,57 +135,23 @@ int main(int argc, const char * argv[]) {
                             printf("Check a user: ");
                             scanf("%s", userToCheck);
                             
-                            int currentHashValueToCheck = getHash(userToCheck);
-                            int amountOfUsersInCurrentHashToCheck = amountOfUsersByHash[currentHashValueToCheck];
+                            currentHashValue = getHash(userToCheck);
+                            amountOfUsersInCurrentHash = amountOfUsersByHash[currentHashValue];
                             
                             int userExists = 0;
                             int positionInHashOfUser = 0;
                             
-                            
-                            for(int i = 0; i < amountOfUsersInCurrentHashToCheck; i++){
-                                if(strcmp(usersInProgam[currentHashValueToCheck][i].username, userToCheck) == 0){
+                            for(int i = 0; i < amountOfUsersInCurrentHash; i++){
+                                if(strcmp(usersInProgam[currentHashValue][i].username, userToCheck) == 0){
                                     userExists = 1;
                                     positionInHashOfUser = i;
                                     break;
                                 }
                             }
                             if(userExists){
-                                char actionToDo[20] = "";
-                                int isUserFollowed = 0;
                                 printf("The user exists! \n");
-                                printf("Its description is: %s \n", usersInProgam[currentHashValueToCheck][positionInHashOfUser].description);
+                                printf("Its description is: %s \n", usersInProgam[currentHashValue][positionInHashOfUser].description);
                                 
-                                for(int i = 0; i < usersInProgam[currentHashValue][positionInHashOfUser].amountOfUsersFollowed; i++){
-                                    if(strcmp(userToCheck, usersInProgam[currentHashValue][positionInHashOfUser].usersFollowed[i]->username)){
-                                        isUserFollowed = 1;
-                                        break;
-                                    }
-                                }
-                                
-                                if(isUserFollowed == 1){
-                                    printf("You already follow this user \n");
-                                } else {
-                                    char wantToLogin[10] = "";
-                                    
-                                    while(strcmp("no", wantToLogin) != 0 && strcmp("yes", wantToLogin) != 0){
-                                        printf("Do you want to follow to this user? write 'yes' or 'no' \n");
-                                        scanf("%s", wantToLogin);
-                                        
-                                        if(strcmp("yes", wantToLogin)){
-                                            printf("Now you follow this user \n");
-                                            int currentAmountOfUsersFollowed = usersInProgam[currentHashValue][positionInHashOfUser].amountOfUsersFollowed;
-                                            
-                                            usersInProgam[currentHashValue][positionInHashOfUser].usersFollowed[currentAmountOfUsersFollowed] = &usersInProgam[currentHashValueToCheck][amountOfUsersInCurrentHashToCheck];
-                                            
-                                            usersInProgam[currentHashValue][positionInHashOfUser].amountOfUsersFollowed++;
-                                            
-                                        } else if(strcmp("no", wantToLogin)){
-                                            printf("You don't want to follow this user \n");
-                                        } else {
-                                            printf("This command does not exist \n");
-                                        }
-                                    }
-                                }
                             } else {
                                 printf("This user does not exist \n");
                             }
@@ -197,6 +162,7 @@ int main(int argc, const char * argv[]) {
                         } else {
                             printf("That command does not exist \n");
                         }
+                        
                     }
                 } else {
                     printf("Wrong password \n");
