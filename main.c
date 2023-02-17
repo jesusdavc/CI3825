@@ -28,7 +28,8 @@ int main(int argc, const char * argv[]) {
         char description[100];
         int password;
         char *tweets[5][280];
-        struct user *followers[20];
+        struct user *usersFollowed[20];
+        int amountOfUsersFollowed;
     } user;
     
     char action[10];
@@ -118,7 +119,6 @@ int main(int argc, const char * argv[]) {
                     char nextAction[10] = "";
                     char userToLogin[20] = "";
                     
-                    //int amountOfUsersByHash[50];
                     int amountOfUsersInCurrentHash = 0;
                     
                     
@@ -181,3 +181,4 @@ int main(int argc, const char * argv[]) {
 
     return 0;
 }
+
