@@ -41,7 +41,7 @@ int main(int argc, const char * argv[]) {
     
     struct user usersInProgam[50][4];
     int amountOfUsersByHash[50];
-    int amountOfUsersInCurrentHash;
+    int amountOfUsersInCurrentHash = 0;
     
     int positionInHashOfUser = 0;
     
@@ -51,6 +51,7 @@ int main(int argc, const char * argv[]) {
     
     while(strcmp("leave", action) != 0){
         printf("DON’T MISS WHAT’S HAPPENING! LOGIN, SIGNUP OR LEAVE\n");
+        strcpy(action, "");
         scanf("%s", action);
         
         if(strcmp("signup", action) == 0){
@@ -85,14 +86,7 @@ int main(int argc, const char * argv[]) {
                 usersInProgam[currentHashValue][amountOfUsersInCurrentHash].password = getHash(newPassword);
                 
                 amountOfUsersByHash[currentHashValue] = amountOfUsersByHash[currentHashValue] + 1;
-                
-                //printf("username %s \n", usersInProgam[currentHashValue][amountOfUsersInCurrentHash].username);
-                //printf("description %s \n", usersInProgam[currentHashValue][amountOfUsersInCurrentHash].description);
-                //printf("password %d \n", usersInProgam[currentHashValue][amountOfUsersInCurrentHash].password);
-                //printf("hashValue: %d \n",currentHashValue);
-                //printf("currentHash: %d \n",amountOfUsersByHash[currentHashValue]);
             }
-            
             
         } else if(strcmp("login", action) == 0){
             
@@ -106,8 +100,7 @@ int main(int argc, const char * argv[]) {
             userTaken = 0;
             
             for(int i = 0; i < amountOfUsersInCurrentHash; i++){
-                //printf("struct data: %s \n",usersInProgam[amountOfUsersInCurrentHash][i].username);
-                //printf("variable: %s \n",username);
+ 
                 if(strcmp(usersInProgam[currentHashValue][i].username, username) == 0){
                     userTaken = 1;
                     positionInHashOfUser = i;
@@ -117,14 +110,59 @@ int main(int argc, const char * argv[]) {
             
             if(userTaken == 1){
                 
-                printf("Password: \n");
+                printf("Password: ");
                 scanf("%s", password);
                 
                 if(usersInProgam[currentHashValue][positionInHashOfUser].password == getHash(password)){
                     printf("Login successfully \n");
-                    char nextAction[20];
-                    while(strcmp("logout", nextAction) != 0){
+                    char nextAction[10] = "";
+                    char userToLogin[20] = "";
                     
+                    //int amountOfUsersByHash[50];
+                    int amountOfUsersInCurrentHash = 0;
+                    
+                    
+                    while(strcmp("logout", nextAction) != 0){
+                        printf("WHAT’S HAPPENING? \n");
+                        scanf("%s", nextAction);
+                        
+                        if(strcmp("+", nextAction) == 0){
+                            printf("You can write a new tweet \n");
+                        } else if(strcmp("@", nextAction) == 0){
+                            
+                            
+                            char userToCheck[20];
+                            printf("Check a user: ");
+                            scanf("%s", userToCheck);
+                            
+                            currentHashValue = getHash(userToCheck);
+                            amountOfUsersInCurrentHash = amountOfUsersByHash[currentHashValue];
+                            
+                            int userExists = 0;
+                            int positionInHashOfUser = 0;
+                            
+                            for(int i = 0; i < amountOfUsersInCurrentHash; i++){
+                                if(strcmp(usersInProgam[currentHashValue][i].username, userToCheck) == 0){
+                                    userExists = 1;
+                                    positionInHashOfUser = i;
+                                    break;
+                                }
+                            }
+                            if(userExists){
+                                printf("The user exists! \n");
+                                printf("Its description is: %s \n", usersInProgam[currentHashValue][positionInHashOfUser].description);
+                                
+                            } else {
+                                printf("This user does not exist \n");
+                            }
+                            
+                            
+                        } else if(strcmp("logout", nextAction) == 0){
+                            printf("You logout from your account \n");
+                        } else {
+                            printf("That command does not exist \n");
+                        }
+                        
                     }
                 } else {
                     printf("Wrong password \n");
