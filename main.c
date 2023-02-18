@@ -55,7 +55,7 @@ int main(int argc, const char * argv[]) {
 
     
     while(strcmp("leave", action) != 0){
-        printf("DON’T MISS WHAT’S HAPPENING! LOGIN, SIGNUP OR LEAVE\n");
+        printf("DON'T MISS WHAT'S HAPPENING! LOGIN, SIGNUP OR LEAVE\n");
         strcpy(action, "");
         scanf("%s", action);
         
@@ -124,7 +124,7 @@ int main(int argc, const char * argv[]) {
                     char nextAction[10] = "";
                     
                     while(strcmp("logout", nextAction) != 0){
-                        printf("WHAT’S HAPPENING? \n");
+                        printf("WHAT'S HAPPENING? \n");
                         scanf("%s", nextAction);
                         
                         if(strcmp("+", nextAction) == 0){
@@ -157,7 +157,7 @@ int main(int argc, const char * argv[]) {
                                     printf("You can't follow yourself \n");
                                 } else {
                                 printf("The user exists! \n");
-                                printf("Its description is: %s \n", usersInProgam[currentHashValueToCheck][positionInHashOfUserToCheck].description);
+                                printf("It's description is: %s \n", usersInProgam[currentHashValueToCheck][positionInHashOfUserToCheck].description);
                                     
                                 currentHashValue = getHash(username);
                                     for(int i = 0; i < amountOfUsersByHash[currentHashValue]; i++){
@@ -209,7 +209,7 @@ int main(int argc, const char * argv[]) {
                             
                             
                         } else if(strcmp("logout", nextAction) == 0){
-                            printf("You logout from your account \n");
+                            printf("You logged out from your account \n");
                         } else {
                             printf("That command does not exist \n");
                         }
@@ -223,9 +223,9 @@ int main(int argc, const char * argv[]) {
             }
             
         } else if(strcmp("leave", action) == 0){
-            printf("You leaved the app\n");
+            printf("You leaft the app\n");
         } else {
-           printf("Unvalid action \n");
+           printf("Invalid action \n");
         }
     }
 
