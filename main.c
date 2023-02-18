@@ -28,17 +28,19 @@ int main(int argc, const char * argv[]) {
         char description[100];
         int password;
         char *tweets[5][280];
-        struct user *usersFollowed[20];
+        char usersFollowed[200][20];
         int amountOfUsersFollowed;
     } user;
     
     char action[10];
-    char* newUsername[20];
-    char* newPassword[20];
-    char* description[100];
-    char* username[20];
-    char* password[20];
+    char newUsername[20];
+    char newPassword[20];
+    char description[100];
+    char username[20];
+    char password[20];
+    char wantToFollow[10];
     int currentHashValue = 0;
+    
     
     struct user usersInProgam[50][4];
     int amountOfUsersByHash[50];
@@ -47,6 +49,8 @@ int main(int argc, const char * argv[]) {
     int positionInHashOfUser = 0;
     
     int userTaken = 0;
+    
+    int isUserFollowed = 0;
 
 
     
@@ -118,10 +122,6 @@ int main(int argc, const char * argv[]) {
                 if(usersInProgam[currentHashValue][positionInHashOfUser].password == getHash(password)){
                     printf("Login successfully \n");
                     char nextAction[10] = "";
-                    char userToLogin[20] = "";
-                    
-                    int amountOfUsersInCurrentHash = 0;
-                    
                     
                     while(strcmp("logout", nextAction) != 0){
                         printf("WHAT’S HAPPENING? \n");
@@ -140,24 +140,36 @@ int main(int argc, const char * argv[]) {
                             int amountOfUsersInCurrentHashToCheck = amountOfUsersByHash[currentHashValueToCheck];
                             
                             int userExists = 0;
-                            int positionInHashOfUser = 0;
+                            int positionInHashOfUserToCheck = 0;
+                            isUserFollowed = 0;
                             
                             
                             for(int i = 0; i < amountOfUsersInCurrentHashToCheck; i++){
                                 if(strcmp(usersInProgam[currentHashValueToCheck][i].username, userToCheck) == 0){
                                     userExists = 1;
-                                    positionInHashOfUser = i;
+                                    positionInHashOfUserToCheck = i;
                                     break;
                                 }
                             }
                             if(userExists){
-                                char actionToDo[20] = "";
-                                int isUserFollowed = 0;
+
+                                if(strcmp(userToCheck,username) == 0){
+                                    printf("You can't follow yourself \n");
+                                } else {
                                 printf("The user exists! \n");
-                                printf("Its description is: %s \n", usersInProgam[currentHashValueToCheck][positionInHashOfUser].description);
+                                printf("Its description is: %s \n", usersInProgam[currentHashValueToCheck][positionInHashOfUserToCheck].description);
+                                    
+                                currentHashValue = getHash(username);
+                                    for(int i = 0; i < amountOfUsersByHash[currentHashValue]; i++){
+                                        if(strcmp(usersInProgam[currentHashValue][i].username, username) == 0){
+                                            userExists = 1;
+                                            positionInHashOfUser = i;
+                                            break;
+                                        }
+                                    }
                                 
                                 for(int i = 0; i < usersInProgam[currentHashValue][positionInHashOfUser].amountOfUsersFollowed; i++){
-                                    if(strcmp(userToCheck, usersInProgam[currentHashValue][positionInHashOfUser].usersFollowed[i]->username)){
+                                    if(strcmp(userToCheck, usersInProgam[currentHashValue][positionInHashOfUser].usersFollowed[i]) == 0){
                                         isUserFollowed = 1;
                                         break;
                                     }
@@ -166,28 +178,32 @@ int main(int argc, const char * argv[]) {
                                 if(isUserFollowed == 1){
                                     printf("You already follow this user \n");
                                 } else {
-                                    char wantToLogin[10] = "";
                                     
-                                    while(strcmp("no", wantToLogin) != 0 && strcmp("yes", wantToLogin) != 0){
+                                    strcpy(wantToFollow,"");
+                                    while(strcmp("no", wantToFollow) != 0 && strcmp("yes", wantToFollow) != 0){
                                         printf("Do you want to follow to this user? write 'yes' or 'no' \n");
-                                        scanf("%s", wantToLogin);
+                                        scanf("%s", wantToFollow);
                                         
-                                        if(strcmp("yes", wantToLogin)){
+                                        if(strcmp("yes", wantToFollow) == 0){
                                             printf("Now you follow this user \n");
                                             int currentAmountOfUsersFollowed = usersInProgam[currentHashValue][positionInHashOfUser].amountOfUsersFollowed;
                                             
-                                            usersInProgam[currentHashValue][positionInHashOfUser].usersFollowed[currentAmountOfUsersFollowed] = &usersInProgam[currentHashValueToCheck][amountOfUsersInCurrentHashToCheck];
+                                            strcpy(usersInProgam[currentHashValue][positionInHashOfUser].usersFollowed[currentAmountOfUsersFollowed], usersInProgam[currentHashValueToCheck][positionInHashOfUserToCheck].username);
                                             
                                             usersInProgam[currentHashValue][positionInHashOfUser].amountOfUsersFollowed++;
                                             
-                                        } else if(strcmp("no", wantToLogin)){
+                                        } else if(strcmp("no", wantToFollow) == 0){
                                             printf("You don't want to follow this user \n");
                                         } else {
                                             printf("This command does not exist \n");
                                         }
                                     }
                                 }
-                            } else {
+                                    
+                                }
+                            }
+
+                            else {
                                 printf("This user does not exist \n");
                             }
                             
