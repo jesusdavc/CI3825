@@ -154,7 +154,7 @@ int main(int argc, const char * argv[]) {
                                 char actionToDo[20] = "";
                                 int isUserFollowed = 0;
                                 printf("The user exists! \n");
-                                printf("Its description is: %s \n", usersInProgam[currentHashValueToCheck][positionInHashOfUser].description);
+                                printf("It's description is: %s \n", usersInProgam[currentHashValueToCheck][positionInHashOfUser].description);
                                 
                                 for(int i = 0; i < usersInProgam[currentHashValue][positionInHashOfUser].amountOfUsersFollowed; i++){
                                     if(strcmp(userToCheck, usersInProgam[currentHashValue][positionInHashOfUser].usersFollowed[i]->username)){
@@ -169,10 +169,10 @@ int main(int argc, const char * argv[]) {
                                     char wantToLogin[10] = "";
                                     
                                     while(strcmp("no", wantToLogin) != 0 && strcmp("yes", wantToLogin) != 0){
-                                        printf("Do you want to follow to this user? write 'yes' or 'no' \n");
+                                        printf("Do you want to follow to this user? Write 'yes' or 'no' \n");
                                         scanf("%s", wantToLogin);
                                         
-                                        if(strcmp("yes", wantToLogin)){
+                                        if(!strcmp("yes", wantToLogin)){
                                             printf("Now you follow this user \n");
                                             int currentAmountOfUsersFollowed = usersInProgam[currentHashValue][positionInHashOfUser].amountOfUsersFollowed;
                                             
@@ -180,7 +180,7 @@ int main(int argc, const char * argv[]) {
                                             
                                             usersInProgam[currentHashValue][positionInHashOfUser].amountOfUsersFollowed++;
                                             
-                                        } else if(strcmp("no", wantToLogin)){
+                                        } else if(!strcmp("no", wantToLogin)){
                                             printf("You don't want to follow this user \n");
                                         } else {
                                             printf("This command does not exist \n");
@@ -193,7 +193,7 @@ int main(int argc, const char * argv[]) {
                             
                             
                         } else if(strcmp("logout", nextAction) == 0){
-                            printf("You logout from your account \n");
+                            printf("You logged out from your account \n");
                         } else {
                             printf("That command does not exist \n");
                         }
@@ -207,9 +207,9 @@ int main(int argc, const char * argv[]) {
             }
             
         } else if(strcmp("leave", action) == 0){
-            printf("You leaved the app\n");
+            printf("You left the app \n");
         } else {
-           printf("Unvalid action \n");
+           printf("Invalid action \n");
         }
     }
 
