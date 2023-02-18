@@ -1,91 +1,147 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include<stdlib.h>
+#include<stdio.h>
+#include<string.h>
 
-
-
-
-
-// Tweet creation with Node struct
-struct Node {
-  int data;
-  char tweet[280];
-  struct Node* next;
-  struct Node* prev;
+struct list_node {
+   char* tweet;
+   int id_tweet;
+   struct list_node* previous;
+   struct list_node* next;
 };
 
-char tweetString[280]
+typedef struct list_node node;
 
-// insert node at the front
-void insertFront(struct Node** head, int data, char tweet[280]) {
-  // allocate memory for newNode
-  struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-
-  // assign data to newNode
-  newNode->data = data;
-
-  newNode->tweet = tweet;
-
-  // make newNode as a head
-  newNode->next = (*head);
-
-  // assign null to prev
-  newNode->prev = NULL;
-
-  // previous of head (now head is the second node) is newNode
-  if ((*head) != NULL)
-    (*head)->prev = newNode;
-
-  // head points to newNode
-  (*head) = newNode;
+int count(node* head) {
+	int count = 0;
+	while(head) {
+		count++;
+		head = head->next;
+	}
+	return count;
 }
 
-
-// insert a newNode at the end of the list
-void insertEnd(struct Node** head, int data, char tweet[280]){
-  // allocate memory for node
-  struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-
-  // assign data to newNode
-  newNode->data = data;
-
-  newNode -> tweet;
-
-  // assign null to next of newNode
-  newNode->next = NULL;
-
-  // store the head node temporarily (for later use)
-  struct Node* temp = *head;
-
-  // if the linked list is empty, make the newNode as head node
-  if (*head == NULL) {
-    newNode->prev = NULL;
-    *head = newNode;
-    return;
-  }
-
-  // if the linked list is not empty, traverse to the end of the linked list
-  while (temp->next != NULL)
-    temp = temp->next;
-  // now, the last node of the linked list is temp
-
-  // assign next of the last node (temp) to newNode
-  temp->next = newNode;
-  // assign prev of newNode to temp
-  newNode->prev = temp;
+node* get_by_index(int index, node* head) {
+	int counter = count(head);
+	int i = 0;
+	if (index < 0 || index > counter) {
+		return NULL;
+	}
+	for (i = 0; i <= index; i++) {
+		if (i == index) {
+			return head;
+		}
+		head = head->next;
+	}
+	return head;
 }
 
-// print the doubly linked list
-void displayList(struct Node* node) {
-  struct Node* last;
-
-  while (node != NULL) {
-    printf("%d->", node->data);
-    last = node;
-    node = node->next;
-  }
-  if (node == NULL)
-    printf("NULL\n");
+node* remove_first(node* head) {
+	head = head->next;
+	free(head->previous);
+	head->previous = NULL;
+	return head;
 }
 
+int remove_last(node* head) {
+	while(head) {
+		if (head->next->next == NULL) {
+			free(head->next);
+			head->next = NULL;
+			return 0;
+		}
+		head = head->next;
+	}
+	return -1;
+}
 
+node* remove_at_index(int index, node* head) {
+	node* current;
+	if (index == 0) {
+		return remove_first(head);
+	} else if ( index < 0) {
+		return head;
+	}
+	current = get_by_index(index, head);
+	if (current == NULL) {
+		return head;
+	}
+	current->previous->next = current->next;
+	if (current->next != NULL) {
+		current->next->previous = current->previous;
+	}
+	free(current);
+	return head;
+}
+
+node* add_first(char* tweet, int id_tweet, node* head) {
+	node* new_node;
+	new_node = (node*)malloc(sizeof(node));
+	new_node->tweet = tweet;
+	new_node->id_tweet = id_tweet;
+    new_node->next = head;
+	if (head != NULL) {
+		head->previous = new_node;
+	}
+    head = new_node;
+	return head;
+}
+
+void add_after(char* tweet, int id_tweet, node* head) {
+	node* new_node;
+	new_node = (node*)malloc(sizeof(node));
+	new_node->tweet = tweet;
+	new_node->id_tweet = id_tweet;
+	new_node->next = head->next;
+	new_node->previous = head;
+	new_node->next->previous = new_node;
+	head->next = new_node;
+}
+
+void add_last(char* tweet, int id_tweet, node* current) {
+	node* new_node;
+	new_node = (node*)malloc(sizeof(node));
+	while(current) {
+		if (current->next == NULL) {
+			current->next = new_node;
+			new_node->tweet = tweet;
+			new_node->id_tweet = id_tweet;
+			new_node->previous = current;
+			return;
+		}
+		current = current->next;
+	}
+}
+
+void print_list(node* current) {
+	while(current) {
+		printf("%s %d", current->tweet, current->id_tweet);
+		printf(" -> ");
+		current = current->next ;
+	}
+}
+
+void print_list_backwards(node* current) {
+	while(current) {
+		printf("%s %d", current->tweet, current->id_tweet);
+		printf(" <- ");
+		current = current->previous ;
+	}
+}
+
+int main(void) {
+	node* head = NULL;
+	node* tail = NULL;
+	int number;
+	unsigned int id_tweet = 0;
+	
+	/* adding the first element requires setting the head. */
+	head = add_first("First Tweet by Elon Musk", id_tweet++, head);
+	
+	/* adding the rest as the last element. */
+	add_last("Second Tweet", id_tweet++, head);
+	add_last("I hate C sorry not sorry ", id_tweet++, head);
+	
+	print_list(head);
+	return 0;
+}
 
