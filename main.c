@@ -42,7 +42,6 @@ struct userElement {
 };
 
 int checkIfUserIsFollowed (struct userFollowed* userFollowedToCheck, char userToCheckIfItsFollowed[20]) {
-    printf("funcion checkeado %s \n", userToCheckIfItsFollowed);
     int result = 0;
     
     while (userFollowedToCheck != NULL) {
@@ -56,7 +55,7 @@ int checkIfUserIsFollowed (struct userFollowed* userFollowedToCheck, char userTo
     return result;
 }
 
-/* Add a new node to the bottom of a list */
+
 struct userFollowed * addUserToFollowersList(struct userFollowed *firstUserFollowed, char newUser[20]) {
     struct userFollowed *currentUserFollowed = firstUserFollowed;
     struct userFollowed *newUserToFollow;
@@ -75,7 +74,6 @@ struct userFollowed * addUserToFollowersList(struct userFollowed *firstUserFollo
 }
 
 void addTweetToList(struct tweet * firstTweetOfUser, char newTweet[280]) {
-    
     
     struct tweet *currentTweetInList = firstTweetOfUser;
     struct tweet *newTweetToAdd;
@@ -122,6 +120,10 @@ void showTweetsOfUser (struct tweet * currentTweet) {
     }
 }
 
+void showTimeline(struct userElement userInAccount) {
+    
+}
+
 int main(int argc, const char * argv[]) {
     
     char action[10];
@@ -143,9 +145,6 @@ int main(int argc, const char * argv[]) {
     int userTaken = 0;
     
     int isUserFollowed = 0;
-    
-    //Check if user is in list
-    //Add user to list
     
     
     
