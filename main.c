@@ -31,6 +31,7 @@ struct tweet {
     char text[280];
     time_t timeOfTweet;
     struct tweet* nextTweet;
+    char username[20];
 };
 
 struct userElement {
@@ -73,7 +74,7 @@ struct userFollowed * addUserToFollowersList(struct userFollowed *firstUserFollo
     return firstUserFollowed;
 }
 
-void addTweetToList(struct tweet * firstTweetOfUser, char newTweet[280]) {
+void addTweetToList(struct tweet * firstTweetOfUser, char newTweet[280], char userThatSentTheTweet[20]) {
     
     struct tweet *currentTweetInList = firstTweetOfUser;
     struct tweet *newTweetToAdd;
@@ -83,24 +84,27 @@ void addTweetToList(struct tweet * firstTweetOfUser, char newTweet[280]) {
         newTweetToAdd->nextTweet = NULL;
         newTweetToAdd->timeOfTweet = time(0);
         strcpy(newTweetToAdd->text, newTweet);
+        strcpy(newTweetToAdd->username, userThatSentTheTweet);
         
         firstTweetOfUser = newTweetToAdd;
     } else {
-    
-    while ( currentTweetInList != NULL && currentTweetInList->nextTweet != NULL) {
-        currentTweetInList = currentTweetInList->nextTweet;
-    }
-    
-    newTweetToAdd = (struct tweet *) malloc(sizeof(struct tweet));
-    strcpy(newTweetToAdd->text, newTweet);
-    newTweetToAdd->nextTweet = NULL;
-    newTweetToAdd->timeOfTweet = time(0);
-    if (currentTweetInList != NULL)
-        currentTweetInList->nextTweet = newTweetToAdd;
-    else
-        firstTweetOfUser = newTweetToAdd;
+        
+        while ( currentTweetInList != NULL && currentTweetInList->nextTweet != NULL) {
+            currentTweetInList = currentTweetInList->nextTweet;
+        }
+        
+        newTweetToAdd = (struct tweet *) malloc(sizeof(struct tweet));
+        strcpy(newTweetToAdd->text, newTweet);
+        strcpy(newTweetToAdd->username, userThatSentTheTweet);
+        newTweetToAdd->nextTweet = NULL;
+        newTweetToAdd->timeOfTweet = time(0);
+        if (currentTweetInList != NULL)
+            currentTweetInList->nextTweet = newTweetToAdd;
+        else
+            firstTweetOfUser = newTweetToAdd;
     }
 }
+
 
 void showTweetsOfUser (struct tweet * currentTweet) {
     
@@ -120,9 +124,75 @@ void showTweetsOfUser (struct tweet * currentTweet) {
     }
 }
 
-void showTimeline(struct userElement userInAccount) {
+/*void showTimeline(int amountOfUsersByHash[50],struct userElement usersInProgam[50][4],struct userFollowed * userInAccount) {
     
-}
+    struct userFollowed * userThatIsFollowed = userInAccount->nextUserFollowed;
+    
+    struct tweet * tweetTimeline = NULL;
+    
+    tweetTimeline = (struct tweet*)malloc(sizeof(struct tweet));
+    
+    int numberOfTweetsInTimeline = 0;
+    
+    while ( userThatIsFollowed != NULL) {
+        
+        userThatIsFollowed = userThatIsFollowed->nextUserFollowed;
+        
+        int positionOfCurrentUser = 0;
+        int currentHash = getHash(userThatIsFollowed->username);
+        int amountOfUsersWithCurrentHash = amountOfUsersByHash[currentHash];
+        
+        
+        for(int i = 0; i < amountOfUsersWithCurrentHash; i++){
+            if(strcmp(usersInProgam[currentHash][i].username, userThatIsFollowed->username)== 0){
+                positionOfCurrentUser = i;
+                break;
+            }
+        }
+        
+        struct tweet* currentTweetOfUser = usersInProgam[currentHash][positionOfCurrentUser].nextTweet->nextTweet;
+        
+        while(currentTweetOfUser != NULL)}{
+            amountOfTweets++;
+            createTimelimeLinkedList(tweetTimeline, currentTweetOfUser,amountOfTweets);
+        }
+    }
+    
+    
+}*/
+
+/*void createTimelimeLinkedList(struct tweet *headTimeline, struct tweet * newTweetTimeline, int amountOfTweets){
+    if(amountOfTweets == 0){
+        strcpy(headTimeline->text, newTweetTimeline->text);
+        headTimeline->timeOfTweet = newTweetTimeline->timeOfTweet;
+        strcpy(headTimeline->username, newTweetTimeline->username);
+        headTimeline->nextTweet = NULL;
+    } else {
+        
+        struct tweet * currentTweetInTimeline = (struct tweet*)malloc(sizeof(struct tweet));
+        strcpy(currentTweetInTimeline->text, newTweetTimeline->text);
+        currentTweetInTimeline->timeOfTweet = newTweetTimeline->timeOfTweet;
+        strcpy(currentTweetInTimeline->username, newTweetTimeline->username);
+        headTimeline->nextTweet = NULL;
+        
+        while (headTimeline != NULL) {
+            if(difftime(currentTweetInTimeline->timeOfTweet,headTimeline->timeOfTweet) > 0 && headTimeline->nextTweet == NULL){
+                headTimeline->nextTweet = currentTweetInTimeline;
+                break;
+            } else if(difftime(currentTweetInTimeline->timeOfTweet,headTimeline->timeOfTweet) > 0){
+                headTimeline = headTimeline->nextTweet;
+            }
+            
+            else {
+                currentTweetInTimeline->nextTweet = headTimeline;
+                headTimeline = currentTweetInTimeline;
+                break;
+            }
+        }
+        
+        
+    }
+}*/
 
 int main(int argc, const char * argv[]) {
     
@@ -149,7 +219,7 @@ int main(int argc, const char * argv[]) {
     
     
     while(strcmp("leave", action) != 0){
-        printf("DON’T MISS WHAT’S HAPPENING! LOGIN, SIGNUP OR LEAVE\n");
+        printf("DON'T MISS WHAT’S HAPPENING! LOGIN, SIGNUP OR LEAVE\n");
         strcpy(action, "");
         scanf("%s", action);
         
@@ -214,6 +284,9 @@ int main(int argc, const char * argv[]) {
                 
                 if(usersInProgam[currentHashValue][positionInHashOfUser].password == getHash(password)){
                     printf("Login successfully \n");
+                    
+                    
+                    
                     char nextAction[10] = "";
                     
                     while(strcmp("logout", nextAction) != 0){
@@ -228,7 +301,7 @@ int main(int argc, const char * argv[]) {
                             printf("New tweet: ");
                             scanf("%s", textOfNewTweet);
                             
-                            addTweetToList(&usersInProgam[currentHashValue][positionInHashOfUser].nextTweet, textOfNewTweet);
+                            addTweetToList(&usersInProgam[currentHashValue][positionInHashOfUser].nextTweet, textOfNewTweet, usersInProgam[currentHashValue][positionInHashOfUser].username);
                             
                             
                         } else if(strcmp("@", nextAction) == 0){
