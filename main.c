@@ -1,3 +1,4 @@
+
 //
 //  main.c
 //  sistemas
@@ -20,6 +21,15 @@ int getHash(char text[20]){
         counter = counter + text[i];
     }
     return counter % 50;
+}
+
+// Esta funcion limpia el buffer
+void cleanBuffer(){
+    int c;
+    do{
+        c = getchar();
+    }
+    while(c != EOF && c != '\n');
 }
 
 // Lista enlazada que sirve para guardar los usuarios seguidos por alguien
@@ -166,7 +176,7 @@ struct tweet * addTweetToTimeline (struct tweet * headTweet,struct tweet * tweet
 
 // Funcion para añadir tweets de un usuario a la timeline
 struct tweet * addTweetsOfUserToTimeline (struct tweet * headTweet,struct tweet * firstTweetOfUser){
-
+    
     if(firstTweetOfUser->nextTweet != NULL){
         firstTweetOfUser = firstTweetOfUser->nextTweet;
     }
@@ -225,8 +235,8 @@ int main(int argc, const char * argv[]) {
     // Checkea si el usuario A ya sigue al usuario B, si vale 1 si, si vale 0 no
     int isUserFollowed = 0;
     
-
-
+    
+    
     
     
     // Este bucle le pregunta al usuario que accion quiere realizar
@@ -239,12 +249,14 @@ int main(int argc, const char * argv[]) {
             
             printf("Username: ");
             scanf("%s", newUsername);
+            cleanBuffer();
             
             printf("Password: ");
             scanf("%s", newPassword);
+            cleanBuffer();
             
             printf("Description: ");
-            scanf("%s", description);
+            fgets(description,100, stdin);
             
             currentHashValue = getHash(newUsername);
             
@@ -271,11 +283,12 @@ int main(int argc, const char * argv[]) {
                 usersInProgam[currentHashValue][amountOfUsersInCurrentHash].password = getHash(newPassword);
                 amountOfUsersByHash[currentHashValue] = amountOfUsersByHash[currentHashValue] + 1;
             }
-        // Login
+            // Login
         } else if(strcmp("login", action) == 0){
             
             printf("Username: ");
             scanf("%s", username);
+            cleanBuffer();
             
             currentHashValue = getHash(username);
             amountOfUsersInCurrentHash = amountOfUsersByHash[currentHashValue];
@@ -298,6 +311,7 @@ int main(int argc, const char * argv[]) {
                 
                 printf("Password: ");
                 scanf("%s", password);
+                cleanBuffer();
                 
                 if(usersInProgam[currentHashValue][positionInHashOfUser].password == getHash(password)){
                     printf("Login successfully \n");
@@ -351,6 +365,7 @@ int main(int argc, const char * argv[]) {
                     while(strcmp("logout", nextAction) != 0){
                         printf("WHAT’S HAPPENING? \n");
                         scanf("%s", nextAction);
+                        cleanBuffer();
                         
                         // Este if sirve para crear un tweet
                         if(strcmp("+", nextAction) == 0){
@@ -359,7 +374,7 @@ int main(int argc, const char * argv[]) {
                             
                             printf("You can write a new tweet \n");
                             printf("New tweet: ");
-                            scanf("%s", textOfNewTweet);
+                            fgets(textOfNewTweet,280, stdin);
                             
                             addTweetToList(&usersInProgam[currentHashValue][positionInHashOfUser].nextTweet, textOfNewTweet, usersInProgam[currentHashValue][positionInHashOfUser].username);
                             
@@ -370,6 +385,8 @@ int main(int argc, const char * argv[]) {
                             char userToCheck[20];
                             printf("Check a user: ");
                             scanf("%s", userToCheck);
+                            cleanBuffer();
+
                             
                             int currentHashValueToCheck = getHash(userToCheck);
                             int amountOfUsersInCurrentHashToCheck = amountOfUsersByHash[currentHashValueToCheck];
@@ -424,6 +441,8 @@ int main(int argc, const char * argv[]) {
                                         while(strcmp("no", wantToFollow) != 0 && strcmp("yes", wantToFollow) != 0){
                                             printf("Do you want to follow to this user? write 'yes' or 'no' \n");
                                             scanf("%s", wantToFollow);
+                                            cleanBuffer();
+
                                             
                                             // Si el usuario quiere seguir este perfil este caso hara que lo haga
                                             if(strcmp("yes", wantToFollow) == 0){
