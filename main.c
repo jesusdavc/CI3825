@@ -182,8 +182,14 @@ struct tweet * addTweetsOfUserToTimeline (struct tweet * headTweet,struct tweet 
 
 int main(int argc, const char * argv[]) {
     
-    // Action que realiza en usuario en twitter (login signup o leave)
-    char action[10];
+    // Hash list que guarda usuarios
+    struct userElement usersInProgam[50][4];
+    
+    //Cantidad de usuario por fila de lista enlazada
+    int amountOfUsersByHash[50];
+    
+    // description de un usuario que se esta registrando
+    char description[100];
     
     // Username de un usuario que se esta registrando
     char newUsername[20];
@@ -191,8 +197,6 @@ int main(int argc, const char * argv[]) {
     // password de un usuario que se esta registrando
     char newPassword[20];
     
-    // description de un usuario que se esta registrando
-    char description[100];
     
     // Username de un usuario que se esta logeando
     char username[20];
@@ -203,14 +207,11 @@ int main(int argc, const char * argv[]) {
     // String que revisa si un usuario quiere seguir a otro o no (su valor será yes o no)
     char wantToFollow[10];
     
+    // Action que realiza en usuario en twitter (login signup o leave)
+    char action[10];
+    
     // Valor del hash del username del usuario
     int currentHashValue = 0;
-    
-    // Hash list que guarda usuarios
-    struct userElement usersInProgam[50][4];
-    
-    //Cantidad de usuario por fila de lista enlazada
-    int amountOfUsersByHash[50];
     
     //Cantidad de usuarios en fila actual de la lista enlazada
     int amountOfUsersInCurrentHash = 0;
@@ -223,6 +224,9 @@ int main(int argc, const char * argv[]) {
     
     // Checkea si el usuario A ya sigue al usuario B, si vale 1 si, si vale 0 no
     int isUserFollowed = 0;
+    
+
+
     
     
     // Este bucle le pregunta al usuario que accion quiere realizar
