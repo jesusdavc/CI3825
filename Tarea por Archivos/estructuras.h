@@ -16,6 +16,7 @@ struct userFollowed {
 struct tweet {
     char text[280];
     time_t timeOfTweet;
+    struct tweet* prevTweet;
     struct tweet* nextTweet;
     char username[20];
 };
