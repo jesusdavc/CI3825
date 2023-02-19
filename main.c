@@ -189,6 +189,21 @@ struct tweet * addTweetsOfUserToTimeline (struct tweet * headTweet,struct tweet 
     return headTweet;
 }
 
+// Funcion para mostrar los seguidores de un usuario
+void showFollowersOfUser (struct userFollowed * currentUser) {
+    
+    int numberOfCurrentFollowers = 0;
+    if(currentUser->nextUserFollowed != NULL){
+        currentUser = currentUser->nextUserFollowed;
+    }
+    
+    while ( currentUser != NULL) {
+        numberOfCurrentFollowers++;
+        printf("Seguidor %d: %s \n", numberOfCurrentFollowers, currentUser->username);
+        currentUser = currentUser->nextUserFollowed;
+    }    
+}
+
 
 int main(int argc, const char * argv[]) {
     
@@ -409,6 +424,8 @@ int main(int argc, const char * argv[]) {
                                 
                                 //Mostrar tweets de ese usuario
                                 showTweetsOfUser(&usersInProgam[currentHashValueToCheck][positionInHashOfUserToCheck].nextTweet);
+                                // Mostrar Seguidores de ese usuario
+                                showFollowersOfUser(&usersInProgam[currentHashValueToCheck][positionInHashOfUserToCheck].nextUserFollowed);
                                 
                                 // El usuario no puede seguirse a si mismo
                                 if(strcmp(userToCheck,username) == 0){
