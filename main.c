@@ -20,7 +20,7 @@ int getHash(char text[20]){
     for(int i = 0; i < strlen(text); i++){
         counter = counter + text[i];
     }
-    return counter % 50;
+    return counter % 20;
 }
 
 // Esta funcion limpia el buffer
@@ -193,10 +193,10 @@ struct tweet * addTweetsOfUserToTimeline (struct tweet * headTweet,struct tweet 
 int main(int argc, const char * argv[]) {
     
     // Hash list que guarda usuarios
-    struct userElement usersInProgam[50][4];
+    struct userElement usersInProgam[20][5];
     
     //Cantidad de usuario por fila de lista enlazada
-    int amountOfUsersByHash[50];
+    int amountOfUsersByHash[20];
     
     // description de un usuario que se esta registrando
     char description[100];
