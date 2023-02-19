@@ -8,8 +8,10 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
 
-#define HASH_SIZE 20
+
 
 int getHash(char text[20]){
     int counter = 0;
@@ -20,17 +22,107 @@ int getHash(char text[20]){
     return counter % 50;
 }
 
+struct userFollowed {
+    char username[20];
+    struct userFollowed* nextUserFollowed;
+};
+
+struct tweet {
+    char text[280];
+    time_t timeOfTweet;
+    struct tweet* nextTweet;
+};
+
+struct userElement {
+    char username[20];
+    char description[100];
+    int password;
+    struct tweet nextTweet;
+    struct userFollowed nextUserFollowed;
+};
+
+int checkIfUserIsFollowed (struct userFollowed* userFollowedToCheck, char userToCheckIfItsFollowed[20]) {
+    printf("funcion checkeado %s \n", userToCheckIfItsFollowed);
+    int result = 0;
+    
+    while (userFollowedToCheck != NULL) {
+        if(strcmp(userFollowedToCheck->username,userToCheckIfItsFollowed) == 0){
+            result = 1;
+            break;
+        }
+        userFollowedToCheck = userFollowedToCheck->nextUserFollowed;
+    }
+    
+    return result;
+}
+
+/* Add a new node to the bottom of a list */
+struct userFollowed * addUserToFollowersList(struct userFollowed *firstUserFollowed, char newUser[20]) {
+    struct userFollowed *currentUserFollowed = firstUserFollowed;
+    struct userFollowed *newUserToFollow;
+    while ( currentUserFollowed != NULL && currentUserFollowed->nextUserFollowed != NULL) {
+        currentUserFollowed = currentUserFollowed->nextUserFollowed;
+    }
+    
+    newUserToFollow = (struct userFollowed *) malloc(sizeof(struct userFollowed));
+    strcpy(newUserToFollow->username, newUser);
+    newUserToFollow->nextUserFollowed= NULL;
+    if (currentUserFollowed != NULL)
+        currentUserFollowed->nextUserFollowed = newUserToFollow;
+    else
+        firstUserFollowed = newUserToFollow;
+    return firstUserFollowed;
+}
+
+void addTweetToList(struct tweet * firstTweetOfUser, char newTweet[280]) {
+    
+    
+    struct tweet *currentTweetInList = firstTweetOfUser;
+    struct tweet *newTweetToAdd;
+    
+    if(firstTweetOfUser == NULL){
+        
+        newTweetToAdd->nextTweet = NULL;
+        newTweetToAdd->timeOfTweet = time(0);
+        strcpy(newTweetToAdd->text, newTweet);
+        
+        firstTweetOfUser = newTweetToAdd;
+    } else {
+    
+    while ( currentTweetInList != NULL && currentTweetInList->nextTweet != NULL) {
+        currentTweetInList = currentTweetInList->nextTweet;
+    }
+    
+    newTweetToAdd = (struct tweet *) malloc(sizeof(struct tweet));
+    strcpy(newTweetToAdd->text, newTweet);
+    newTweetToAdd->nextTweet = NULL;
+    newTweetToAdd->timeOfTweet = time(0);
+    if (currentTweetInList != NULL)
+        currentTweetInList->nextTweet = newTweetToAdd;
+    else
+        firstTweetOfUser = newTweetToAdd;
+    }
+}
+
+void showTweetsOfUser (struct tweet * currentTweet) {
+    
+    int numberOfCurrentTweet = 0;
+    if(currentTweet->nextTweet != NULL){
+        currentTweet = currentTweet->nextTweet;
+    }
+    
+    while ( currentTweet != NULL) {
+        numberOfCurrentTweet++;
+        printf("Tweet number %d: %s \n", numberOfCurrentTweet, currentTweet->text);
+        currentTweet = currentTweet->nextTweet;
+    }
+    
+    if(numberOfCurrentTweet == 0){
+        printf("This user does not have tweets \n");
+    }
+}
 
 int main(int argc, const char * argv[]) {
-
-    typedef struct user {
-        char username[20];
-        char description[100];
-        int password;
-        char *tweets[5][280];
-        char usersFollowed[200][20];
-        int amountOfUsersFollowed;
-    } user;
     
     char action[10];
     char newUsername[20];
@@ -42,7 +134,7 @@ int main(int argc, const char * argv[]) {
     int currentHashValue = 0;
     
     
-    struct user usersInProgam[50][4];
+    struct userElement usersInProgam[50][4];
     int amountOfUsersByHash[50];
     int amountOfUsersInCurrentHash = 0;
     
@@ -51,11 +143,14 @@ int main(int argc, const char * argv[]) {
     int userTaken = 0;
     
     int isUserFollowed = 0;
-
-
+    
+    //Check if user is in list
+    //Add user to list
+    
+    
     
     while(strcmp("leave", action) != 0){
-        printf("DON'T MISS WHAT'S HAPPENING! LOGIN, SIGNUP OR LEAVE\n");
+        printf("DON’T MISS WHAT’S HAPPENING! LOGIN, SIGNUP OR LEAVE\n");
         strcpy(action, "");
         scanf("%s", action);
         
@@ -84,12 +179,11 @@ int main(int argc, const char * argv[]) {
             }
             
             if(userTaken == 1){
-                printf("Username already taken");
+                printf("Username already taken \n");
             } else {
                 strcpy(usersInProgam[currentHashValue][amountOfUsersInCurrentHash].username, newUsername);
                 strcpy(usersInProgam[currentHashValue][amountOfUsersInCurrentHash].description, description);
                 usersInProgam[currentHashValue][amountOfUsersInCurrentHash].password = getHash(newPassword);
-                usersInProgam[currentHashValue][amountOfUsersInCurrentHash].amountOfUsersFollowed = 0;
                 
                 amountOfUsersByHash[currentHashValue] = amountOfUsersByHash[currentHashValue] + 1;
             }
@@ -106,7 +200,7 @@ int main(int argc, const char * argv[]) {
             userTaken = 0;
             
             for(int i = 0; i < amountOfUsersInCurrentHash; i++){
- 
+                
                 if(strcmp(usersInProgam[currentHashValue][i].username, username) == 0){
                     userTaken = 1;
                     positionInHashOfUser = i;
@@ -124,11 +218,20 @@ int main(int argc, const char * argv[]) {
                     char nextAction[10] = "";
                     
                     while(strcmp("logout", nextAction) != 0){
-                        printf("WHAT'S HAPPENING? \n");
+                        printf("WHAT’S HAPPENING? \n");
                         scanf("%s", nextAction);
                         
                         if(strcmp("+", nextAction) == 0){
+                            
+                            char textOfNewTweet[280];
+                            
                             printf("You can write a new tweet \n");
+                            printf("New tweet: ");
+                            scanf("%s", textOfNewTweet);
+                            
+                            addTweetToList(&usersInProgam[currentHashValue][positionInHashOfUser].nextTweet, textOfNewTweet);
+                            
+                            
                         } else if(strcmp("@", nextAction) == 0){
                             
                             
@@ -152,14 +255,16 @@ int main(int argc, const char * argv[]) {
                                 }
                             }
                             if(userExists){
-
+                                
+                                showTweetsOfUser(&usersInProgam[currentHashValueToCheck][positionInHashOfUserToCheck].nextTweet);
+                                
                                 if(strcmp(userToCheck,username) == 0){
                                     printf("You can't follow yourself \n");
                                 } else {
-                                printf("The user exists! \n");
-                                printf("It's description is: %s \n", usersInProgam[currentHashValueToCheck][positionInHashOfUserToCheck].description);
+                                    printf("The user exists! \n");
+                                    printf("Its description is: %s \n", usersInProgam[currentHashValueToCheck][positionInHashOfUserToCheck].description);
                                     
-                                currentHashValue = getHash(username);
+                                    currentHashValue = getHash(username);
                                     for(int i = 0; i < amountOfUsersByHash[currentHashValue]; i++){
                                         if(strcmp(usersInProgam[currentHashValue][i].username, username) == 0){
                                             userExists = 1;
@@ -167,49 +272,41 @@ int main(int argc, const char * argv[]) {
                                             break;
                                         }
                                     }
-                                
-                                for(int i = 0; i < usersInProgam[currentHashValue][positionInHashOfUser].amountOfUsersFollowed; i++){
-                                    if(strcmp(userToCheck, usersInProgam[currentHashValue][positionInHashOfUser].usersFollowed[i]) == 0){
-                                        isUserFollowed = 1;
-                                        break;
-                                    }
-                                }
-                                
-                                if(isUserFollowed == 1){
-                                    printf("You already follow this user \n");
-                                } else {
                                     
-                                    strcpy(wantToFollow,"");
-                                    while(strcmp("no", wantToFollow) != 0 && strcmp("yes", wantToFollow) != 0){
-                                        printf("Do you want to follow to this user? write 'yes' or 'no' \n");
-                                        scanf("%s", wantToFollow);
+                                    
+                                    isUserFollowed = checkIfUserIsFollowed(&usersInProgam[currentHashValue][positionInHashOfUser].nextUserFollowed, userToCheck);
+                                    
+                                    
+                                    if(isUserFollowed == 1){
+                                        printf("You already follow this user \n");
+                                    } else {
                                         
-                                        if(strcmp("yes", wantToFollow) == 0){
-                                            printf("Now you follow this user \n");
-                                            int currentAmountOfUsersFollowed = usersInProgam[currentHashValue][positionInHashOfUser].amountOfUsersFollowed;
+                                        strcpy(wantToFollow,"");
+                                        while(strcmp("no", wantToFollow) != 0 && strcmp("yes", wantToFollow) != 0){
+                                            printf("Do you want to follow to this user? write 'yes' or 'no' \n");
+                                            scanf("%s", wantToFollow);
                                             
-                                            strcpy(usersInProgam[currentHashValue][positionInHashOfUser].usersFollowed[currentAmountOfUsersFollowed], usersInProgam[currentHashValueToCheck][positionInHashOfUserToCheck].username);
-                                            
-                                            usersInProgam[currentHashValue][positionInHashOfUser].amountOfUsersFollowed++;
-                                            
-                                        } else if(strcmp("no", wantToFollow) == 0){
-                                            printf("You don't want to follow this user \n");
-                                        } else {
-                                            printf("This command does not exist \n");
+                                            if(strcmp("yes", wantToFollow) == 0){
+                                                printf("Now you follow this user \n");
+                                                addUserToFollowersList(&usersInProgam[currentHashValue][positionInHashOfUser].nextUserFollowed, userToCheck);
+                                            } else if(strcmp("no", wantToFollow) == 0){
+                                                printf("You don't want to follow this user \n");
+                                            } else {
+                                                printf("This command does not exist \n");
+                                            }
                                         }
                                     }
-                                }
                                     
                                 }
                             }
-
+                            
                             else {
                                 printf("This user does not exist \n");
                             }
                             
                             
                         } else if(strcmp("logout", nextAction) == 0){
-                            printf("You logged out from your account \n");
+                            printf("You logout from your account \n");
                         } else {
                             printf("That command does not exist \n");
                         }
@@ -223,11 +320,11 @@ int main(int argc, const char * argv[]) {
             }
             
         } else if(strcmp("leave", action) == 0){
-            printf("You leaft the app\n");
+            printf("You leaved the app\n");
         } else {
-           printf("Invalid action \n");
+            printf("Unvalid action \n");
         }
     }
-
+    
     return 0;
 }
