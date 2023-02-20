@@ -260,6 +260,11 @@ int main(int argc, const char * argv[]) {
                             
                             addTweetToList(&usersInProgam[currentHashValue][positionInHashOfUser].nextTweet, textOfNewTweet, usersInProgam[currentHashValue][positionInHashOfUser].username);
                             
+                            // Salir del programa
+                        }else if (strcmp("leave", nextAction) == 0){
+                            printf("You left the program\n");
+                            return 0;
+
                             // En este caso se entra al perfil de un usuario
                         } else if(strcmp("@", nextAction) == 0){
                             
@@ -370,7 +375,7 @@ int main(int argc, const char * argv[]) {
             }
             // Si el usuario elige cerrar el programa se le mostrará esto
         } else if(strcmp("leave", action) == 0){
-            printf("You leaft the app\n");
+            printf("You left the app\n");
         }
         // Si el usuario hace una accion no valida se le mostrará esto
         else {

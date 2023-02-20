@@ -1,3 +1,5 @@
+// Archivo que contiene las definiciones de Structs que seran utilizadas en el programa para almacenar usuarios y tweets
+
 #ifndef ESTRUCTURAS
 #define ESTRUCTURAS
 
